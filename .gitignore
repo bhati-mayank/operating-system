@@ -3,6 +3,7 @@ fork
 open
 *.out
 *.exe
+exec
 
 # Object files
 *.o
