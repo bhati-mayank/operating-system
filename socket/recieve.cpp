@@ -1,17 +1,17 @@
 #include <iostream>
 #include <cstdlib>
+#include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
-#include <netinet/in.h>
 
 using namespace std;
 
-#define BACKLOG 20
 #define PORT 10000
+#define BACKLOG 20
 
 int main()
 {
-    // call socket 
+    // call socket
     int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
 
     // check socket failure
@@ -21,17 +21,16 @@ int main()
         return EXIT_FAILURE;
     }
 
-    cout << "socket succesfull" << endl;
-
-    // get address info
+    // get addres info
     sockaddr_in address;
 
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(PORT);
 
-    // call bind for the defined port and socket
-    int bind_result = bind(socket_fd, (struct sockaddr*)&address, sizeof(address));
+    // call bind
+    int bind_result = bind(socket_fd, (struct sockaddr *)&address, sizeof(address));
+
 
     // check bind failure
     if(bind_result < 0)
@@ -40,37 +39,40 @@ int main()
         return EXIT_FAILURE;
     }
 
-    cout << "bind successful" << endl;
-
-
     // call listen
     int listen_result = listen(socket_fd, BACKLOG);
 
-    // check listen failure
-    if(listen_result  < 0)
+    //check listen failure
+    if(listen_result < 0)
     {
         perror("listen failed\n");
         return EXIT_FAILURE;
     }
 
-    cout << "listen succesfull" << endl;
-
     // call accept
     int client_fd = accept(socket_fd, NULL, NULL);
 
-    // check accept failure
-    if(client_fd  < 0)
+    //check accept failure
+    if(client_fd < 0)
     {
-        perror("accept failed\n");
+        perror("client failed\n");
         return EXIT_FAILURE;
     }
 
+    // call recv
+    // create buffer
+    char buffer[1024] = {0};
+    int reads = recv(client_fd, buffer, sizeof(buffer), 0);
 
-    cout << "client connected" << endl;
+    // print the recieved input
+    cout << "recieved: " << buffer << endl;
 
+    // close the file discriptors
     close(socket_fd);
     close(client_fd);
 
-    return 0;
+    cout << "accept succesfull\n" << endl;
 
+    //return
+    return 0;
 }
