@@ -5,9 +5,13 @@ open
 *.exe
 exec
 
+
 # Object files
 *.o
 *.obj
+b
+s
+l
 
 # VS Code
 .vscode/
